@@ -74,6 +74,8 @@ def initialize() {
         log.debug "appinfo: $settings.name"
         log.debug "Need to create child $settings.name"
         device = addChildDevice("mnestor", "GCal Event Sensor", getDeviceID(), null, [label: "GCal:${settings.name}", completedSetup: true])
+        //make sure it's created before we do anything else
+        device.save()
     } else {
         log.debug "Need to change child $settings.name"
         device = getChildDevice(getDeviceID())
