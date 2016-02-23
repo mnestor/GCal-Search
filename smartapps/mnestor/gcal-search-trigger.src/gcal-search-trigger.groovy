@@ -15,6 +15,7 @@
 /**
  *
  * Updates:
+ * 20160223.4 - Fix for duplicating sensors, not having a clostTime at time of open when event is in progress
  * 20160223.2 - Don't make a quick change and forget to test
  * 20160223.1 - Error checking - Force check for Device Handler so we can let the user have a more informative error
  *
@@ -44,7 +45,7 @@ def selectCalendars() {
     //force a check to make sure the device handler is available for use
     try {
     	def device = addChildDevice(getNamespace(), getDeviceHandler(), getDeviceID(), null, [label: "GCal:${settings.name}", completedSetup: true])
-        device.delete()
+        deleteChildDevice(device.deviceNetworkId)
     } catch (e) {
     	return dynamicPage(name: "selectCalendars", title: "Missing Device", install: true, uninstall: false) {
         	section ("Error") {
@@ -102,7 +103,10 @@ def initialize() {
 
 def uninstalled() {
     log.debug "do uninstall in gcal trigger"
-    
+	deleteAllChildren()
+}
+
+def deleteAllChildren() {
     getChildDevices().each {
     	log.debug "Delete $it.deviceNetworkId"
         try {
@@ -114,19 +118,11 @@ def uninstalled() {
 }
 
 private childCreated() {
-    if (getChildDevice(getDeviceID())) {
-        return true
-    } else {
-        return false
-    }
+    return getChildDevice(getDeviceID())
 }
 
 private getDeviceID() {
     return "GCal_${app.id}"
-}
-
-def eventUpdater(evt) {
-    log.trace "eventUpdater()"
 }
 
 def getNextEvents() {
