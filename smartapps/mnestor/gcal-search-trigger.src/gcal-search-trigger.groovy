@@ -11,6 +11,14 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  */
+ 
+/**
+ *
+ * Updates:
+ * 20160223.2 - Don't make a quick change and forget to test
+ * 20160223.1 - Error checking - Force check for Device Handler so we can let the user have a more informative error
+ *
+ */
 
 definition(
     name: "GCal Search Trigger",
@@ -123,7 +131,7 @@ def eventUpdater(evt) {
 
 def getNextEvents() {
     log.debug "getNextEvents() child"
-    def search = (!settings.search) ? "" : setting.search
+    def search = (!settings.search) ? "" : settings.search
     return parent.getNextEvents(settings.watchCalendars, search)
 }
 
