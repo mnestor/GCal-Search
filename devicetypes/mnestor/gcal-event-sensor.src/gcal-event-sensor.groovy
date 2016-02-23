@@ -11,6 +11,13 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  */
+/**
+ *
+ * Updates:
+ * 20160223.1 - Error checking - Force check for Device Handler so we can let the user have a more informative error
+ *
+ */
+ 
 metadata {
 	// Automatically generated. Make future change here.
 	definition (name: "GCal Event Sensor", namespace: "mnestor", author: "mnestor") {
