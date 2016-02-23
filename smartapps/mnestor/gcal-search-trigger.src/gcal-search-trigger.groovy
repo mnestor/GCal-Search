@@ -44,8 +44,7 @@ def selectCalendars() {
     
     //force a check to make sure the device handler is available for use
     try {
-    	def device = addChildDevice(getNamespace(), getDeviceHandler(), getDeviceID(), null, [label: "GCal:${settings.name}", completedSetup: true])
-        deleteChildDevice(device.deviceNetworkId)
+    	def device = getDevice()
     } catch (e) {
     	return dynamicPage(name: "selectCalendars", title: "Missing Device", install: true, uninstall: false) {
         	section ("Error") {
@@ -74,6 +73,16 @@ def selectCalendars() {
 
 def installed() {}
 
+def getDevice() {
+	def device
+    if (!childCreated()) {
+        device = addChildDevice(getNamespace(), getDeviceHandler(), getDeviceID(), null, [label: "GCal:${settings.name}", completedSetup: true])
+    } else {
+        device = getChildDevice(getDeviceID())
+    }
+    return device
+}
+
 def updated() {
 	log.debug "Updated with settings: ${settings}"
 
@@ -87,12 +96,8 @@ def updated() {
 def initialize() {
     log.debug "initialize()"
     app.updateLabel(settings.name)
-    def device
-    if (!childCreated()) {
-        device = addChildDevice(getNamespace(), getDeviceHandler(), getDeviceID(), null, [label: "GCal:${settings.name}", completedSetup: true])
-    } else {
-        device = getChildDevice(getDeviceID())
-    }
+    
+    def device = getDevice()
     
     device.setRefresh(settings.refresh)
     device.label = "GCal:${settings.name}"
