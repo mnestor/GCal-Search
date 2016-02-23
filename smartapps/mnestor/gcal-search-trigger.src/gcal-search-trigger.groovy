@@ -32,7 +32,19 @@ def selectCalendars() {
 	log.debug "selectCalendars()"
     
     def calendars = parent.getCalendarList()
-        
+    
+    //force a check to make sure the device handler is available for use
+    try {
+    	def device = addChildDevice(getNamespace(), getDeviceHandler(), getDeviceID(), null, [label: "GCal:${settings.name}", completedSetup: true])
+        device.delete()
+    } catch (e) {
+    	return dynamicPage(name: "selectCalendars", title: "Missing Device", install: true, uninstall: false) {
+        	section ("Error") {
+            	paragraph "We can't seem to create a child device, did you install the GCal Event Sensor device handler?"
+            }
+        }
+    }
+    
     return dynamicPage(name: "selectCalendars", title: "Create new calendar search", install: true, uninstall: childCreated()) {
             section("Required") {
                 input name: "name", type: "text", title: "Assign a Name", required: true, multiple: false
@@ -51,10 +63,7 @@ def selectCalendars() {
         }
 }
 
-def installed() {
-    log.debug "installed()"
-}
-
+def installed() {}
 
 def updated() {
 	log.debug "Updated with settings: ${settings}"
@@ -71,13 +80,8 @@ def initialize() {
     app.updateLabel(settings.name)
     def device
     if (!childCreated()) {
-        log.debug "appinfo: $settings.name"
-        log.debug "Need to create child $settings.name"
-        device = addChildDevice("mnestor", "GCal Event Sensor", getDeviceID(), null, [label: "GCal:${settings.name}", completedSetup: true])
-        //make sure it's created before we do anything else
-        device.save()
+        device = addChildDevice(getNamespace(), getDeviceHandler(), getDeviceID(), null, [label: "GCal:${settings.name}", completedSetup: true])
     } else {
-        log.debug "Need to change child $settings.name"
         device = getChildDevice(getDeviceID())
     }
     
@@ -110,7 +114,6 @@ private childCreated() {
 }
 
 private getDeviceID() {
-    log.debug "we got called to get the device ID!"
     return "GCal_${app.id}"
 }
 
@@ -120,8 +123,9 @@ def eventUpdater(evt) {
 
 def getNextEvents() {
     log.debug "getNextEvents() child"
-    def search = settings.search
-    if (!search) { search = "" }
-    log.debug "getNextEvents() watchCalendars: ${watchCalendars}, search: ${search}"
+    def search = (!settings.search) ? "" : setting.search
     return parent.getNextEvents(settings.watchCalendars, search)
 }
+
+private getDeviceHandler() { return "GCal Event Sensor" }
+private getNamespace() { return "mnestor" }
