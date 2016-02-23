@@ -14,6 +14,8 @@
 /**
  *
  * Updates:
+ * 20160223.4 - Fix for Dates in UK
+ * 20160223.3 - Fix for DateFormat, set the closeTime before we call open() on in progress event to avoid exception
  * 20160223.1 - Error checking - Force check for Device Handler so we can let the user have a more informative error
  *
  */
@@ -136,6 +138,11 @@ void poll() {
         
         sendEvent("name":"eventSummary", "value":eventSummary)
         
+        //we need the close time set before we open an event in progress
+        //set the closeTime attribute, in the open() call we'll setup the timer for close
+        //this way we don't keep timers open in case the start time gets cancelled
+        sendEvent("name":"closeTime", "value":end)
+        
         //check if we're already in the event
         if (start < new Date()) {
         	if (!isOpen) { open() }
@@ -146,9 +153,6 @@ void poll() {
         	runOnce(start, open, [overwrite: true])
         }
         
-        //set the closeTime attribute, in the open() call we'll setup the timer for close
-        //this way we don't keep timers open in case the start time gets cancelled
-        sendEvent("name":"closeTime", "value":end)
     } else {
     	sendEvent("name":"eventSummary", "value":"No events found")
     	if (isOpen) { close() }
@@ -161,7 +165,7 @@ void poll() {
 }
 
 def Date3339to8601(String s) {
-   s = s.replaceAll(~/([+-][0-9][0-9]):([0-9][0-9])/, "\$1\$2").replaceAll(~/(:[0-9][0-9])([-+Z])/, "\$1.000\$2")
+   s = s.replaceAll(~/([+-][0-9][0-9]):([0-9][0-9])/, "\$1\$2").replaceAll(~/(:[0-9][0-9])([-+Z])/, "\$1.000\$2").replaceAll(~/Z$/, "-0000")
    return s
 }
 
