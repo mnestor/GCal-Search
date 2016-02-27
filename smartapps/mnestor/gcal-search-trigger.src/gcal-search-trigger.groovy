@@ -68,6 +68,9 @@ def selectCalendars() {
             section("Optional") {
             	input name: "refresh", type: "number", title: "Time in minutes to refresh device", required: false, defaultValue: 15, range: "5..86400"
             }
+            if (childCreated()){
+            	section ("Tap the button below to remove this trigger and corresponding switch"){}
+            }
         }
 }
 
@@ -138,3 +141,6 @@ def getNextEvents() {
 
 private getDeviceHandler() { return "GCal Event Sensor" }
 private getNamespace() { return "mnestor" }
+private def textVersion() {
+    def text = "Trigger Version: 20160223.4"
+}
