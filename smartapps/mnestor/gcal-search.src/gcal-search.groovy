@@ -28,7 +28,8 @@ definition(
 }
 
 preferences {
-	page(name: "authentication", title: "Google Calendar", content: "mainPage", submitOnChange: true, uninstall: true, install: true)
+	page(name: "authentication", title: "Google Calendar", content: "mainPage", submitOnChange: true, uninstall: false, install: true)
+	page name: "pageAbout"
 }
 
 mappings {
@@ -54,12 +55,26 @@ def mainPage() {
             }
         } else {
             section(){
-                app(name: "childApps", appName: "GCal Search Trigger", namespace: "mnestor", title: "New GCal Search", multiple: true)
+                app(name: "childApps", appName: "GCal Search Trigger", namespace: "mnestor", title: "New GCal Search...", multiple: true)
+            }
+            section("Options"){
+            	href "pageAbout", title: "About ${textAppName()}", description: "Tap to get application version, license, instructions or remove the application"
             }
         }
     }
 }
-
+def pageAbout() {
+    dynamicPage(name: "pageAbout", title: "About ${textAppName()}", uninstall: true) {
+        section {
+            paragraph "${textVersion()}\n${textCopyright()}\n\n${textLicense()}\n"
+        }
+        section("Instructions") {
+            paragraph textHelp()
+        }
+        section("Tap button below to remove all GCal Searches, triggers and switches"){
+        }
+	}
+}
 def getCalendarList() {
     log.debug "getCalendarList()"
     refreshAuthToken()
@@ -350,4 +365,35 @@ def revokeAccess() {
 		log.debug "something went wrong: $e"
 		log.debug e.getResponse().getData()
 	}
+}
+//Version/Copyright/Information/Help
+private def textAppName() {
+	def text = "GCal Search"
+}	
+private def textVersion() {
+    def version = "Main App Version: 20160222.1"
+    def childCount = childApps.size()
+    def childVersion = childCount ? childApps[0].textVersion() : "No GCal Triggers installed"  
+    return "${version}\n${childVersion}"
+}
+private def textCopyright() {
+    def text = "Copyright © 2016 Mike Nestor"
+}
+private def textLicense() {
+	def text =
+		"Licensed under the Apache License, Version 2.0 (the 'License'); "+
+		"you may not use this file except in compliance with the License. "+
+		"You may obtain a copy of the License at"+
+		"\n\n"+
+		"    http://www.apache.org/licenses/LICENSE-2.0"+
+		"\n\n"+
+		"Unless required by applicable law or agreed to in writing, software "+
+		"distributed under the License is distributed on an 'AS IS' BASIS, "+
+		"WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. "+
+		"See the License for the specific language governing permissions and "+
+		"limitations under the License."
+}
+private def textHelp() {
+	def text =
+        "Small amount of text instructions here "         
 }
