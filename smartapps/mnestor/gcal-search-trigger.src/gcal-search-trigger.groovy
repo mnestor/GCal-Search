@@ -37,6 +37,10 @@ preferences {
 	page(name: "selectCalendars")
 }
 
+private version() {
+	def text = "20160227.1"
+}
+
 def selectCalendars() {
 	log.debug "selectCalendars()"
     
@@ -142,5 +146,5 @@ def getNextEvents() {
 private getDeviceHandler() { return "GCal Event Sensor" }
 private getNamespace() { return "mnestor" }
 private def textVersion() {
-    def text = "Trigger Version: 20160223.4"
+    def text = "Trigger Version: ${version()}"
 }
