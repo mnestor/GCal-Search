@@ -37,6 +37,10 @@ mappings {
 	path("/oauth/callback") {action: [GET: "callback"]}
 }
 
+private version() {
+	def text = "20160222.1"
+}
+
 def mainPage() {
 	if(!atomicState.accessToken) {
         log.debug "about to create access token"
@@ -66,7 +70,7 @@ def mainPage() {
 def pageAbout() {
     dynamicPage(name: "pageAbout", title: "About ${textAppName()}", uninstall: true) {
         section {
-            paragraph "${textVersion()}\n${textCopyright()}\n\n${textLicense()}\n"
+            paragraph "${textVersion()}\n${textCopyright()}\n\n${textContributors()}\n\n${textLicense()}\n"
         }
         section("Instructions") {
             paragraph textHelp()
@@ -371,7 +375,7 @@ private def textAppName() {
 	def text = "GCal Search"
 }	
 private def textVersion() {
-    def version = "Main App Version: 20160222.1"
+    def version = "Main App Version: ${version()}"
     def childCount = childApps.size()
     def childVersion = childCount ? childApps[0].textVersion() : "No GCal Triggers installed"  
     return "${version}\n${childVersion}"
@@ -396,4 +400,8 @@ private def textLicense() {
 private def textHelp() {
 	def text =
         "Small amount of text instructions here "         
+}
+
+private def textContributors() {
+	def text = "Contributors:\nUI/UX: Michael Struck"
 }
