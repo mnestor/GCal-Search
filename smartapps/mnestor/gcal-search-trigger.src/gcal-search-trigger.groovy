@@ -65,9 +65,13 @@ def selectCalendars() {
                 input name: "watchCalendars", title:"", type: "enum", required:true, multiple:false, description: "Which calendars do you want to search?", metadata:[values:calendars]
             }
             section("Free-Form Search") {
-                paragraph "Leave search blank to match every event on the selected calendar(s)"
-                paragraph "Searches for entries that have all terms\nTo search for an exact phrase, enclose the phrase in quotation marks: \"exact phrase\"\nTo exclude entries that match a given term, use the form -term\nExamples:\nHoliday (anything with Holiday)\n\"#Holiday\" (anything with #Holiday)\n#Holiday (anything with Holiday, ignores the #)"
                 input name: "search", type: "text", title: "Search String", required: false
+                paragraph "Leave search blank to match every event on the selected calendar(s)"
+                paragraph "Searches for entries that have all terms\n\nTo search for an exact phrase, " +
+                "enclose the phrase in quotation marks: \"exact phrase\"\n\nTo exclude entries that " +
+                "match a given term, use the form -term\n\nExamples:\nHoliday (anything with Holiday)\n" +
+                "\"#Holiday\" (anything with #Holiday)\n#Holiday (anything with Holiday, ignores the #)"
+                
             }
             section("Optional") {
             	input name: "refresh", type: "number", title: "Time in minutes to refresh device", required: false, defaultValue: 15, range: "5..86400"
