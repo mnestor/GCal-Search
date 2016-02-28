@@ -399,7 +399,13 @@ private def textLicense() {
 }
 private def textHelp() {
 	def text =
-        "Small amount of text instructions here "         
+        "Once you associate your Google Calendar with this application, you can set up  "+
+        "different seaches for different events that will trigger the corresponding GCal "+
+        "switch to go on or off.\n\nWhen searching for events, if you leave the search "+
+        "string blank it will trigger for each event in your calendar.\n\nTo search an exact phrase, "+
+        "enclose the phrase in quotation marks: \"exact phrase\"\n\nTo exclude entries "+
+        "that match a given term, use the form -term\n\nExamples:\nHoliday (anything with Holiday)\n" +
+        "\"#Holiday\" (anything with #Holiday)\n#Holiday (anything with Holiday, ignores the #)"
 }
 
 private def textContributors() {
