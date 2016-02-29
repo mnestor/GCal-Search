@@ -38,7 +38,7 @@ mappings {
 }
 
 private version() {
-	def text = "20160227.1"
+	def text = "20160229.1"
 }
 
 def mainPage() {
