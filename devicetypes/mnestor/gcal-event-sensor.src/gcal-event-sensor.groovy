@@ -44,8 +44,8 @@ metadata {
 
 	tiles (scale: 2) {
 		standardTile("status", "device.contact", width: 2, height: 2) {
-			state("closed", label:'${name}', icon:"st.contact.contact.closed", backgroundColor:"#79b821")
-			state("open", label:'${name}', icon:"st.contact.contact.open", backgroundColor:"#ffa81e")
+			state("closed", label:'', icon:"https://raw.githubusercontent.com/mnestor/GCal-Search/icons/icons/GCal-Off@2x.png", backgroundColor:"#79b821")
+			state("open", label:'', icon:"https://raw.githubusercontent.com/mnestor/GCal-Search/icons/icons/GCal-On@2x.png", backgroundColor:"#ffa81e")
 		}
         
         standardTile("refresh", "device.refresh", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
@@ -165,12 +165,18 @@ void poll() {
 }
 
 def Date3339to8601(String s) {
-   s = s.replaceAll(~/([+-][0-9][0-9]):([0-9][0-9])/, "\$1\$2").replaceAll(~/(:[0-9][0-9])([-+Z])/, "\$1.000\$2").replaceAll(~/Z$/, "-0000")
-   return s
+	//per rfc3339 - https://tools.ietf.org/html/rfc3339
+    // The Z at the end of the datetime denotes UTC so we can safely convert it to 0000 offset for rfc8601
+	s = s.replaceAll(~/([+-][0-9][0-9]):([0-9][0-9])/, "\$1\$2").replaceAll(~/(:[0-9][0-9])([-+Z])/, "\$1.000\$2").replaceAll(~/Z$/, "-0000")
+	return s
 }
 
 def DateFormat() {
 	return "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+}
+
+def getDateFormatter() {
+	def df = new java.text.SimpleDateFormat()
 }
 
 def schedulePoll() {
