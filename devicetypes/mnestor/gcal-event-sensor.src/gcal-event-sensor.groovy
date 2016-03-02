@@ -14,6 +14,7 @@
 /**
  *
  * Updates:
+ * 20160301.1 - GUI fix for white space
  * 20160223.4 - Fix for Dates in UK
  * 20160223.3 - Fix for DateFormat, set the closeTime before we call open() on in progress event to avoid exception
  * 20160223.1 - Error checking - Force check for Device Handler so we can let the user have a more informative error
@@ -48,7 +49,7 @@ metadata {
 			state("open", label:'', icon:"https://raw.githubusercontent.com/mnestor/GCal-Search/icons/icons/GCal-On@2x.png", backgroundColor:"#ffa81e")
 		}
         
-        standardTile("refresh", "device.refresh", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
+        standardTile("refresh", "device.refresh", inactiveLabel: false, decoration: "flat", width:4, height: 2) {
             state "default", action:"refresh.refresh", icon:"st.secondary.refresh"
         }
                 
