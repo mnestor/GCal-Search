@@ -38,7 +38,7 @@ mappings {
 }
 
 private version() {
-	def text = "20160229.1"
+	def text = "20160302.1"
 }
 
 def mainPage() {
@@ -377,8 +377,9 @@ private def textAppName() {
 private def textVersion() {
     def version = "Main App Version: ${version()}"
     def childCount = childApps.size()
-    def childVersion = childCount ? childApps[0].textVersion() : "No GCal Triggers installed"  
-    return "${version}\n${childVersion}"
+    def childVersion = childCount ? childApps[0].textVersion() : "No GCal Triggers installed"
+    def deviceVersion = childCount ? "\n${childApps[0].dVersion()}" : ""
+    return "${version}\n${childVersion}${deviceVersion}"
 }
 private def textCopyright() {
     def text = "Copyright © 2016 Mike Nestor"
