@@ -14,6 +14,7 @@
 /**
  *
  * Updates:
+ * 20160302.1 - Allow for polling of device version number
  * 20160301.1 - GUI fix for white space
  * 20160223.4 - Fix for Dates in UK
  * 20160223.3 - Fix for DateFormat, set the closeTime before we call open() on in progress event to avoid exception
@@ -190,4 +191,7 @@ def schedulePoll() {
 def setRefresh(min) {
 	log.trace "Setting refresh: ${min}"
 	sendEvent("name":"refreshTime", "value":min)
+}
+def version(){
+	def text = "20160302.1"
 }
