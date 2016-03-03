@@ -15,6 +15,7 @@
 /**
  *
  * Updates:
+ * 20160303.1 - Ensure switch is added to the currently used hub
  * 20160302.1 - Added device versioning
  * 20160223.4 - Fix for duplicating sensors, not having a clostTime at time of open when event is in progress
  * 20160223.2 - Don't make a quick change and forget to test
@@ -39,7 +40,7 @@ preferences {
 }
 
 private version() {
-	def text = "20160302.1"
+	def text = "20160303.1"
 }
 
 def selectCalendars() {
@@ -87,8 +88,9 @@ def installed() {}
 
 def getDevice() {
 	def device
+    def hubID = location.hubs[0].id
     if (!childCreated()) {
-        device = addChildDevice(getNamespace(), getDeviceHandler(), getDeviceID(), null, [label: "GCal:${settings.name}", completedSetup: true])
+        device = addChildDevice(getNamespace(), getDeviceHandler(), getDeviceID(), hubID, [label: "GCal:${settings.name}", completedSetup: true])
     } else {
         device = getChildDevice(getDeviceID())
     }
