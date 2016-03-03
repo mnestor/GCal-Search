@@ -15,6 +15,7 @@
 /**
  *
  * Updates:
+ * 20160302.1 - Added device versioning
  * 20160223.4 - Fix for duplicating sensors, not having a clostTime at time of open when event is in progress
  * 20160223.2 - Don't make a quick change and forget to test
  * 20160223.1 - Error checking - Force check for Device Handler so we can let the user have a more informative error
@@ -38,7 +39,7 @@ preferences {
 }
 
 private version() {
-	def text = "20160229.1"
+	def text = "20160302.1"
 }
 
 def selectCalendars() {
@@ -151,4 +152,7 @@ private getDeviceHandler() { return "GCal Event Sensor" }
 private getNamespace() { return "mnestor" }
 private def textVersion() {
     def text = "Trigger Version: ${version()}"
+}
+private def dVersion(){
+	def text = "Device Version: ${getChildDevices()[0].version()}"
 }
