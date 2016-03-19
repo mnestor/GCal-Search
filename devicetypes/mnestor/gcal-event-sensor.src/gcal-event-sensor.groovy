@@ -14,6 +14,7 @@
 /**
  *
  * Updates:
+ * 20160319.1 - Fix for all day events
  * 20160302.1 - Allow for polling of device version number
  * 20160301.1 - GUI fix for white space
  * 20160223.4 - Fix for Dates in UK
@@ -123,8 +124,8 @@ void poll() {
         if (event.start.containsKey('date')) {
         	//this is for full day events
         	//get start and end dates adjusting for timezone
-        	start = new Date(Date.parse("yyyy-MM-dd", event.start.date).time - TimeZone.getTimeZone(items.timeZone).getRawOffset())
-            end = new Date((new Date(Date.parse("yyyy-MM-dd", event.end.date).time - TimeZone.getTimeZone(items.timeZone).getRawOffset()) + 1).time - 60)
+        	start = new Date(Date.parse("yyyy-MM-dd", event.start.date).time)
+            end = new Date(Date.parse("yyyy-MM-dd", event.end.date).time - 60)
         } else {
         	start = Date.parse(DateFormat(), Date3339to8601(event.start.dateTime))
             end = Date.parse(DateFormat(), Date3339to8601(event.end.dateTime))
@@ -193,5 +194,5 @@ def setRefresh(min) {
 	sendEvent("name":"refreshTime", "value":min)
 }
 def version(){
-	def text = "20160302.1"
+	def text = "20160319.1"
 }
