@@ -14,6 +14,7 @@
 /**
  *
  * Updates:
+ * 20160332.2 - Updated date parsing for non-fullday events
  * 20160331.1 - Fix for all day event attempt #2
  * 20160319.1 - Fix for all day events
  * 20160302.1 - Allow for polling of device version number
@@ -130,8 +131,10 @@ void poll() {
             start = sdf.parse(event.start.date)
             end = new Date(sdf.parse(event.end.date).time - 60)
         } else {
-        	start = Date.parse(DateFormat(), Date3339to8601(event.start.dateTime))
-            end = Date.parse(DateFormat(), Date3339to8601(event.end.dateTime))
+            def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss")
+            sdf.setTimeZone(TimeZone.getTimeZone(items.timeZone))
+            start = sdf.parse(event.start.dateTime)
+            end = sdf.parse(event.end.dateTime)
         }
         log.debug "Start: " + start
         log.debug "End: " + end
@@ -172,21 +175,6 @@ void poll() {
     }
 }
 
-def Date3339to8601(String s) {
-	//per rfc3339 - https://tools.ietf.org/html/rfc3339
-    // The Z at the end of the datetime denotes UTC so we can safely convert it to 0000 offset for rfc8601
-	s = s.replaceAll(~/([+-][0-9][0-9]):([0-9][0-9])/, "\$1\$2").replaceAll(~/(:[0-9][0-9])([-+Z])/, "\$1.000\$2").replaceAll(~/Z$/, "-0000")
-	return s
-}
-
-def DateFormat() {
-	return "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-}
-
-def getDateFormatter() {
-	def df = new java.text.SimpleDateFormat()
-}
-
 def schedulePoll() {
 	try { unschedule(poll) } catch (e) {  }
     
@@ -199,5 +187,5 @@ def setRefresh(min) {
 	sendEvent("name":"refreshTime", "value":min)
 }
 def version(){
-	def text = "20160331.1"
+	def text = "20160331.2"
 }
