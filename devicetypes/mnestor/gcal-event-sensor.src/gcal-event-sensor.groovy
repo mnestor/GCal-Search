@@ -14,6 +14,7 @@
 /**
  *
  * Updates:
+ * 20160331.1 - Fix for all day event attempt #2
  * 20160319.1 - Fix for all day events
  * 20160302.1 - Allow for polling of device version number
  * 20160301.1 - GUI fix for white space
@@ -124,12 +125,16 @@ void poll() {
         if (event.start.containsKey('date')) {
         	//this is for full day events
         	//get start and end dates adjusting for timezone
-        	start = new Date(Date.parse("yyyy-MM-dd", event.start.date).time)
-            end = new Date(Date.parse("yyyy-MM-dd", event.end.date).time - 60)
+            def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+            sdf.setTimeZone(TimeZone.getTimeZone(items.timeZone))
+            start = sdf.parse(event.start.date)
+            end = new Date(sdf.parse(event.end.date).time - 60)
         } else {
         	start = Date.parse(DateFormat(), Date3339to8601(event.start.dateTime))
             end = Date.parse(DateFormat(), Date3339to8601(event.end.dateTime))
         }
+        log.debug "Start: " + start
+        log.debug "End: " + end
         
         def eventSummary = "Title: ${event.summary}\n"
         def startHuman = start.format("EEE, d MMM yyyy hh:mm a", location.timeZone)
@@ -194,5 +199,5 @@ def setRefresh(min) {
 	sendEvent("name":"refreshTime", "value":min)
 }
 def version(){
-	def text = "20160319.1"
+	def text = "20160331.1"
 }
