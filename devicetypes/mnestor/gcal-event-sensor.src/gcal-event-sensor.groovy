@@ -14,6 +14,7 @@
 /**
  *
  * Updates:
+ * 20160411.1 - Change schedule to happen in the child app instead of the device
  * 20160332.2 - Updated date parsing for non-fullday events
  * 20160331.1 - Fix for all day event attempt #2
  * 20160319.1 - Fix for all day events
@@ -75,12 +76,8 @@ def parse(String description) {}
 // refresh status
 def refresh() {
 	log.trace "refresh()"
-    try {
-    	unschedule('poll')
-    } catch (e) { log.error "Failed to unschedule" }
     
     poll() //do one now and make sure we schedule
-    schedulePoll()
 }
 
 def open() {
@@ -91,7 +88,7 @@ def open() {
     def closeTime = new Date(device.currentState("closeTime").value)
     log.debug "Setting up Close for: ${closeTime}"
     sendEvent("name":"closeTime", "value":closeTime)
-    runOnce(closeTime, close, [overwrite: true])
+    parent.schedule(closeTime, "close", [overwrite: true])
     
     schedulePoll()
 }
@@ -161,7 +158,7 @@ void poll() {
         	if (isOpen) { close() }
             log.debug "Setting up Open for: ${start}"
             sendEvent("name":"openTime", "value":start)
-        	runOnce(start, open, [overwrite: true])
+        	parent.schedule(start, "open", [overwrite: true])
         }
         
     } else {
@@ -173,13 +170,12 @@ void poll() {
     } catch (e) {
     	log.warn "Failed to do poll: ${e}"
     }
+    
+    schedulePoll()
 }
 
 def schedulePoll() {
-	try { unschedule(poll) } catch (e) {  }
-    
-    def refreshTime = device.currentState("refreshTime").value.toInteger() * 60
-    runPeriodically(refreshTime, poll)
+	parent.schedulePoll()
 }
 
 def setRefresh(min) {
@@ -187,5 +183,5 @@ def setRefresh(min) {
 	sendEvent("name":"refreshTime", "value":min)
 }
 def version(){
-	def text = "20160331.2"
+	def text = "20160411.1"
 }
