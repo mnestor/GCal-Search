@@ -15,6 +15,7 @@
 /**
  *
  * Updates:
+ * 20160411.1 - Change schedule to happen in the child app instead of the device
  * 20150304.1 - Revert back hub ID to previous method
  * 20160303.1 - Ensure switch is added to the currently used hub
  * 20160302.1 - Added device versioning
@@ -41,7 +42,7 @@ preferences {
 }
 
 private version() {
-	def text = "20160304.1"
+	def text = "20160411.1"
 }
 
 def selectCalendars() {
@@ -118,6 +119,31 @@ def initialize() {
     device.save()
     
     device.refresh()
+}
+
+def schedulePoll() {
+	try { unschedule(poll) } catch (e) {  }
+    
+    def device = getDevice()
+    def refreshTime = device.currentState("refreshTime").value.toInteger() * 60
+    log.trace "Setting poll: ${refreshTime}"
+    runIn(refreshTime, poll)
+}
+
+def poll() {
+	getDevice().poll()
+}
+
+def schedule(time, method, args) {
+	runOnce(time, method, args)
+}
+
+def open() {
+	getDevice().open()
+}
+
+def close() {
+	getDevice().close()
 }
 
 def uninstalled() {
