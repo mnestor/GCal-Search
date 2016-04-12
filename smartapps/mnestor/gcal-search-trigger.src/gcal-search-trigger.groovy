@@ -77,9 +77,6 @@ def selectCalendars() {
                 "\"#Holiday\" (anything with #Holiday)\n#Holiday (anything with Holiday, ignores the #)"
                 
             }
-            section("Optional") {
-            	input name: "refresh", type: "number", title: "Time in minutes to refresh device", required: false, defaultValue: 15, range: "5..86400"
-            }
             if (childCreated()){
             	section ("Tap the button below to remove this trigger and corresponding switch"){}
             }
@@ -114,20 +111,16 @@ def initialize() {
     
     def device = getDevice()
     
-    device.setRefresh(settings.refresh)
     device.label = "GCal:${settings.name}"
     device.save()
     
     device.refresh()
 }
 
-def schedulePoll() {
+def refresh() {
 	try { unschedule(poll) } catch (e) {  }
     
-    def device = getDevice()
-    def refreshTime = device.currentState("refreshTime").value.toInteger() * 60
-    log.trace "Setting poll: ${refreshTime}"
-    runIn(refreshTime, poll)
+    runEvery15Minutes(poll)
 }
 
 def poll() {
