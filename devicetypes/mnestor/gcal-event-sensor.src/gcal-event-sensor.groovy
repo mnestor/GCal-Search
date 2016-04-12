@@ -40,7 +40,6 @@ metadata {
         attribute "eventSummary", "string"
         attribute "openTime", "number"
         attribute "closeTime", "number"
-        attribute "refreshTime", "number"
 	}
 
 	simulator {
@@ -77,6 +76,7 @@ def parse(String description) {}
 def refresh() {
 	log.trace "refresh()"
     
+    parent.refresh()
     poll() //do one now and make sure we schedule
 }
 
@@ -89,15 +89,12 @@ def open() {
     log.debug "Setting up Close for: ${closeTime}"
     sendEvent("name":"closeTime", "value":closeTime)
     parent.schedule(closeTime, "close", [overwrite: true])
-    
-    schedulePoll()
 }
 
 def close() {
 	log.trace "close()"
     sendEvent(name: "contact", value: "closed")
     sendEvent(name: "switch", value: "off")
-    schedulePoll()
 }
 
 void poll() {
@@ -170,12 +167,6 @@ void poll() {
     } catch (e) {
     	log.warn "Failed to do poll: ${e}"
     }
-    
-    schedulePoll()
-}
-
-def schedulePoll() {
-	parent.schedulePoll()
 }
 
 def setRefresh(min) {
